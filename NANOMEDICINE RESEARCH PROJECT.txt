@@ -1,0 +1,91 @@
+#include <stdio.h>
+
+typedef struct {
+    float size;
+    float surface_charge;
+    float blood_brain_penetration;
+    float disease_measure;
+    int age;
+    int gender;
+    int disease_presence;
+} Patient;
+
+int predict_disease(Patient p) {
+    if (p.blood_brain_penetration > 0.7 && p.size < 100 && p.disease_measure > 6.0) {
+        return 1; 
+    }
+    return 0;
+}
+
+int main() {
+    Patient patients[50] = {
+        {50.5, 25.0, 0.8, 7.2, 60, 1, 1}, {80.0, 15.5, 0.6, 5.9, 58, 0, 0},
+        {45.0, 20.0, 0.9, 7.5, 65, 1, 1}, {70.0, 10.5, 0.5, 5.8, 72, 1, 0},
+        {55.0, 30.0, 0.8, 6.7, 50, 0, 1}, {60.0, 18.0, 0.7, 7.2, 54, 1, 1},
+        {90.0, 22.0, 0.4, 5.5, 68, 0, 0}, {40.0, 16.0, 0.9, 8.0, 62, 1, 1},
+        {75.0, 27.0, 0.6, 6.3, 66, 0, 0}, {50.0, 20.5, 0.7, 6.8, 60, 1, 1},
+        {72.0, 28.0, 0.8, 5.6, 56, 0, 0}, {52.5, 26.0, 0.7, 6.5, 60, 1, 1},
+        {65.0, 18.5, 0.6, 7.0, 67, 0, 1}, {48.0, 22.0, 0.8, 7.5, 55, 1, 1},
+        {60.0, 21.0, 0.75, 6.0, 61, 0, 0}, {78.0, 19.5, 0.7, 6.3, 70, 1, 0},
+        {55.5, 17.0, 0.6, 7.8, 64, 0, 1}, {67.0, 20.0, 0.8, 5.9, 63, 1, 0},
+        {58.0, 23.5, 0.9, 6.2, 69, 1, 1}, {48.5, 19.5, 0.7, 8.2, 56, 0, 1},
+        {80.5, 18.5, 0.7, 6.9, 72, 1, 0}, {65.5, 22.5, 0.6, 7.4, 55, 1, 1},
+        {50.5, 20.0, 0.7, 6.5, 62, 0, 1}, {70.5, 25.0, 0.9, 6.5, 60, 1, 1},
+        {72.5, 18.0, 0.8, 7.2, 67, 1, 1}, {69.0, 21.0, 0.6, 6.6, 59, 1, 0},
+        {63.5, 17.5, 0.75, 7.5, 54, 0, 1}, {50.0, 20.0, 0.7, 6.0, 68, 1, 1},
+        {64.0, 24.0, 0.6, 5.5, 62, 0, 0}, {53.5, 19.0, 0.8, 6.8, 71, 1, 1},
+        {75.5, 22.5, 0.9, 7.1, 69, 0, 1}, {61.0, 20.5, 0.7, 6.9, 57, 0, 1},
+        {58.5, 23.0, 0.8, 6.3, 59, 1, 0}, {74.0, 25.5, 0.6, 5.7, 64, 1, 0},
+        {52.0, 21.0, 0.7, 6.5, 60, 1, 1}, {66.5, 24.0, 0.8, 7.3, 68, 1, 1},
+        {59.0, 20.5, 0.8, 7.0, 62, 0, 1}, {48.0, 19.0, 0.7, 6.9, 58, 1, 0},
+        {71.0, 22.0, 0.6, 6.4, 65, 0, 1}, {50.5, 21.5, 0.75, 7.2, 60, 1, 1},
+        {68.0, 19.5, 0.8, 6.7, 61, 0, 1}, {55.0, 20.0, 0.7, 7.0, 63, 1, 1},
+        {95.0, 31.7, 0.9, 7.1, 80, 1, 1}, {99.0, 33.3, 0.8, 8.0, 62, 1, 0},
+        {94.0, 24.2, 0.81, 8.8, 77, 1, 1},{83.0, 25.0, 0.82, 9.0,93, 1, 1},
+        {91.0, 32.1, 0.75, 9.2, 66, 0 ,1},{98.0, 16.0, 0.90, 8.8, 71, 0, 1},
+        {80.0, 40.2, 0.82, 9.3, 76, 1, 1},{95.0, 31.7, 0.9, 7.1, 80, 1, 1}
+    };
+
+    int correct_predictions = 0;
+    int TP = 0, FP = 0, TN = 0, FN = 0; 
+
+    printf("\nPatient Predictions:\n");
+    printf("%-6s %-7s %-15s %-16s %-4s %-7s %-8s %-9s\n", "Size", "Charge", "BBB Penetration", "Disease Measure", "Age", "Gender", "Outcome", "Predicted");
+    
+    for (int i = 0; i < 50; i++) {
+        int prediction = predict_disease(patients[i]);
+        if (prediction == patients[i].disease_presence) {
+            correct_predictions++;
+        }
+
+        if (prediction == 1 && patients[i].disease_presence == 1) {
+            TP++; // True Positive
+        } else if (prediction == 1 && patients[i].disease_presence == 0) {
+            FP++; // False Positive
+        } else if (prediction == 0 && patients[i].disease_presence == 0) {
+            TN++; // True Negative
+        } else if (prediction == 0 && patients[i].disease_presence == 1) {
+            FN++; // False Negative
+        }
+
+        printf("%-6.1f %-7.1f %-15.2f %-16.1f %-4d %-7s %-8s %-9s\n", 
+            patients[i].size, 
+            patients[i].surface_charge, 
+            patients[i].blood_brain_penetration, 
+            patients[i].disease_measure, 
+            patients[i].age, 
+            patients[i].gender ? "M" : "F", 
+            patients[i].disease_presence ? "Yes" : "No", 
+            prediction ? "Yes" : "No"
+        );
+    }
+    float accuracy = (correct_predictions / 50.0) * 100;
+    printf("\nModel Accuracy: %.2f%%\n", accuracy);
+
+    printf("\nConfusion Matrix:\n");
+    printf("               Predicted Positive    Predicted Negative\n");
+    printf("Actual Positive     %d (TP)            %d (FN)\n", TP, FN);
+    printf("Actual Negative     %d (FP)            %d (TN)\n", FP, TN);
+
+    return 0;
+}
